@@ -2,9 +2,9 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
 
 const app = express();
@@ -32,6 +32,14 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(notFound404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect
+  ("mongodb+srv://vp3node:WavntWpLBnvmeili@clustershop.i3wim.mongodb.net/nodejs-shop?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(result => {
+    app.listen(3000);
+    console.log('Connected successfully!');
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
