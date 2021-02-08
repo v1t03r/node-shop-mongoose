@@ -1,6 +1,6 @@
 # A Node.js + Express Shop
 
-## A Node.js + Express API built using Mongoose  
+## A Node.js + Express Shop API built using Mongoose  
 (Under Construction)
   
 How to install:  

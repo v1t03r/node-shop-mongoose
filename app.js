@@ -1,4 +1,5 @@
 const path = require('path');
+const dotenv = require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -33,8 +34,7 @@ app.use(shopRoutes);
 app.use(notFound404);
 
 mongoose
-  .connect
-  ("mongodb+srv://vp3node:WavntWpLBnvmeili@clustershop.i3wim.mongodb.net/nodejs-shop?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(result => {
     app.listen(3000);
     console.log('Connected successfully!');
@@ -42,4 +42,3 @@ mongoose
   .catch(err => {
     console.log(err);
   });
-
