@@ -20,6 +20,10 @@ form {
   display: inline;
 }
 
+.centered {
+  text-align: center;
+}
+
 hr { 
   background-color: #22262A; height: 2px; border: 1px #22262A;
 }
@@ -28,10 +32,13 @@ hr {
   text-align: center;
 }
 
-.responsive {
-  width: 100%;
-  max-width: 400px;
+.image {
+  width: auto;
   height: auto;
+}
+
+.image img {
+  max-width: 85%;
 }
 
 .main-header {

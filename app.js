@@ -1,14 +1,22 @@
 const path = require('path');
-const dotenv = require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
+const MONGODB_URI = process.env.MONGO_DB;
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -21,8 +29,19 @@ const notFound404 = require('./routes/404');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: store
+})
+);
+
 app.use((req, res, next) => {
-  User.findById('60217f8b6da87b116ef8be44')
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
       next();
@@ -36,7 +55,7 @@ app.use(authRoutes);
 app.use(notFound404);
 
 mongoose
-  .connect(process.env.MONGO_DB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(result => {
     User.findOne().then(user => {
       if (!user) {
@@ -56,4 +75,3 @@ mongoose
   .catch(err => {
     console.log(err);
   });
-
